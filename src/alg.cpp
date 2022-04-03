@@ -2,8 +2,7 @@
 #include <string>
 #include <map>
 #include "tstack.h"
-
-int prior(char pr) {
+int priority(char pr) {
     if (pr == '(') {
         return 1;
     }
@@ -19,13 +18,13 @@ std::string infx2pstfx(std::string inf) {
   TStack <char, 100> stack1;
     std::string post;
     for (int i = 0; i < inf.size(); i++) {
-        int uni = prior(inf[i]);
-        if ((prior(inf[i]) == -1) && (inf[i] != ')')) {
-            if (!post.empty() && prior(inf[i - 1]) != -1) {
+        int mr = priority(inf[i]);
+        if ((priority(inf[i]) == -1) && (inf[i] != ')')) {
+            if (!post.empty() && priority(inf[i - 1]) != -1) {
                 post.push_back(' ');
             }
             post.push_back(inf[i]);
-        } else if ((prior(inf[i]) > prior(stack1.get()))
+        } else if ((priority(inf[i]) > priority(stack1.get()))
                    || (stack1.isEmpty()) || (inf[i] == '(')) {
             stack1.push(inf[i]);
         } else {
@@ -37,7 +36,7 @@ std::string infx2pstfx(std::string inf) {
                 }
                 stack1.pop();
             } else {
-                while (prior(stack1.get()) >= prior(inf[i])) {
+                while (priority(stack1.get()) >= priority(inf[i])) {
                     post.push_back(' ');
                     post.push_back(stack1.get());
                     stack1.pop();
@@ -67,50 +66,50 @@ int lat(char x) {
 }
 int eval(std::string pref) {
   TStack<int, 100> stack2;
-    int mr = 0;
+    int uni = 0;
     for (int i = 0; i < pref.size(); i++) {
         if (lat(pref[i]) > -1) {
-            mr = mr * 10 + lat(pref[i]);
+            uni = uni * 10 + lat(pref[i]);;
         } else {
-            if (mr != 0) {
-                stack2.push(mr);
-                mr = 0;
+            if (uni != 0) {
+                stack2.push(uni);
+                uni = 0;
             }
             switch (pref[i]) {
             case '+':
             {
-                int ul = stack2.get();
+                int uni1 = stack2.get();
                 stack2.pop();
-                int lu = stack2.get();
+                int uni2 = stack2.get();
                 stack2.pop();
-                stack2.push(ul + lu);
+                stack2.push(uni1 + uni2);
                 break;
             }
             case '-':
             {
-                int ul = stack2.get();
+                int uni1 = stack2.get();
                 stack2.pop();
-                int lu = stack2.get();
+                int uni2 = stack2.get();
                 stack2.pop();
-                stack2.push(lu - ul);
+                stack2.push(uni2 - uni1);
                 break;
             }
             case '*':
             {
-                int ul = stack2.get();
+                int uni1 = stack2.get();
                 stack2.pop();
-                int op2 = stack2.get();
+                int uni2 = stack2.get();
                 stack2.pop();
-                stack2.push(ul * lu);
+                stack2.push(uni1 * uni2);
                 break;
             }
             case '/':
             {
-                int ul = stack2.get();
+                int uni1 = stack2.get();
                 stack2.pop();
-                int lu = stack2.get();
+                int uni2 = stack2.get();
                 stack2.pop();
-                stack2.push(lu / ul);
+                stack2.push(uni2 / uni1);
                 break;
             }
             }
