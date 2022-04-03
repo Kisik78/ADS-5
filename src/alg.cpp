@@ -70,9 +70,7 @@ int eval(std::string pref) {
     int mr = 0;
     for (int i = 0; i < pref.size(); i++) {
         if (lat(pref[i]) > -1) {
-            mr = mr * 10 + lat(pref[i]);;
-        }
-        else {
+            mr = mr * 10 + lat(pref[i]);
         } else {
             if (mr != 0) {
                 stack2.push(mr);
