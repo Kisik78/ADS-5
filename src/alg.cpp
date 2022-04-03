@@ -3,35 +3,33 @@
 #include <map>
 #include "tstack.h"
 
-int prior(char pr1) {
-    if (pr1= '(') {
-        return 0;
-    }
-    if (pr1 == ')') {
+int prior(char pr) {
+    if (pr == '(') {
         return 1;
     }
-    if (pr1 == '+' || pr1== '-') {
+    if (pr == '+' || pr == '-') {
         return 2;
     }
-    if (pr1 == '*' || pr1 == '/') {
+    if (pr == '*' || pr == '/') {
         return 3;
     }
     return -1;
 }
 std::string infx2pstfx(std::string inf) {
-    TStack <char, 100> stack1;
+  TStack <char, 100> stack1;
     std::string post;
-    for (size_t i = 0; i < inf.size(); ++i) {
+    for (int i = 0; i < inf.size(); i++) {
         int uni = prior(inf[i]);
-        if (uni == -1) {
+        if ((prior(inf[i]) == -1) && (inf[i] != ')')) {
             if (!post.empty() && prior(inf[i - 1]) != -1) {
                 post.push_back(' ');
             }
             post.push_back(inf[i]);
-        } else if (uni == 0 || uni > prior(stack1.get()) || stack1.isEmpty()) {
+        } else if ((prior(inf[i]) > prior(stack1.get()))
+                   || (stack1.isEmpty()) || (inf[i] == '(')) {
             stack1.push(inf[i]);
         } else {
-            if (uni == 1) {
+            if (inf[i] == ')') {
                 while (stack1.get() != '(') {
                     post.push_back(' ');
                     post.push_back(stack1.get());
@@ -39,7 +37,7 @@ std::string infx2pstfx(std::string inf) {
                 }
                 stack1.pop();
             } else {
-                while (prior(stack1.get()) >= uni) {
+                while (prior(stack1.get()) >= prior(inf[i])) {
                     post.push_back(' ');
                     post.push_back(stack1.get());
                     stack1.pop();
@@ -50,7 +48,9 @@ std::string infx2pstfx(std::string inf) {
     }
     while (!stack1.isEmpty()) {
         post.push_back(' ');
-        post.push_back(stack1.get());
+        if (stack1.get() != '(') {
+            post.push_back(stack1.get());
+        }
         stack1.pop();
     }
     return post;
